@@ -44,12 +44,15 @@ class Stream(tweepy.StreamingClient):
             repliedTo = self.client.get_tweet(repliedTo, tweet_fields = ['referenced_tweets'])
             thread.append(repliedTo.data['text'])
             repliedTo = repliedTo.data['referenced_tweets'][-1].id if repliedTo.data['referenced_tweets'] != None and repliedTo.data['referenced_tweets'][-1].type == 'replied_to' else None    
+        
+        thread = '\n'.join(thread[::-1])
 
         return thread
 
     def on_tweet(self, tweet):
-        print('Getting thread')
-        print(self._get_thread(tweet))
+        print('Fetching thread')
+        thread = self._get_thread(tweet)
+        print(thread)
         time.sleep(0.2)
         pass
 
