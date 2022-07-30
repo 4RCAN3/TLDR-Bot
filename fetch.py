@@ -6,7 +6,7 @@ try:
     import os
     import time
 except Exception as e:
-    print('Import error', e)\
+    print('Import error', e)
 
 
 load_dotenv()
