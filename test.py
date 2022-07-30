@@ -14,4 +14,5 @@ client = tweepy.Client(BEARER_TOKEN, API_KEY, API_SECRET_KEY, ACCESS_TOKEN, ACCE
 
 tweet = client.get_tweet('1550960310412001281', tweet_fields = ['referenced_tweets'])
 
+repliedTo = tweet.data['referenced_tweets']
 print(tweet.data['referenced_tweets'][-1].id)
