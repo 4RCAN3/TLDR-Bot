@@ -5,6 +5,7 @@ try:
     from dotenv import load_dotenv
     import os
     import time
+    import generate
 except Exception as e:
     print('Import error', e)
 
@@ -36,7 +37,7 @@ class Stream(tweepy.StreamingClient):
     def on_connect(self):
         print('Stream started')
     
-    def _get_thread(self, tweet):
+    def _get_thread(self, tweet) -> str:
         repliedTo = tweet.data['referenced_tweets'][0]['id']
         thread = []
 
@@ -44,20 +45,21 @@ class Stream(tweepy.StreamingClient):
             repliedTo = self.client.get_tweet(repliedTo, tweet_fields = ['referenced_tweets'])
             thread.append(repliedTo.data['text'])
             repliedTo = repliedTo.data['referenced_tweets'][-1].id if repliedTo.data['referenced_tweets'] != None and repliedTo.data['referenced_tweets'][-1].type == 'replied_to' else None    
+        
+        thread = '\n'.join(thread[::-1])
 
         return thread
 
     def on_tweet(self, tweet):
-        print('Getting thread')
-        print(self._get_thread(tweet))
+        print('Fetching thread')
+        thread = self._get_thread(tweet)
+        summary = generate.generate_summary(thread)
+        self.client.create_tweet(text=summary, in_reply_to_tweet_id=tweet.id)
+        
         time.sleep(0.2)
         pass
 
-rules = ['@Arcane45882959 is:reply']
 
 stream = Stream(bearer_token=BEARER_TOKEN, wait_on_rate_limit=True)
-
-for rule in rules:
-    stream.add_rules(tweepy.StreamRule(rule))
-
+stream.add_rules(tweepy.StreamRule(['@Arcane45882959 is:reply']))
 stream.filter(tweet_fields = ['conversation_id', 'referenced_tweets'])
