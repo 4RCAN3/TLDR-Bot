@@ -40,21 +40,31 @@ class Stream(tweepy.StreamingClient):
     def _get_thread(self, tweet) -> str:
         repliedTo = tweet.data['referenced_tweets'][0]['id']
         thread = []
-
+        intro = ''
         while repliedTo != None:
-            repliedTo = self.client.get_tweet(repliedTo, tweet_fields = ['referenced_tweets'])
+            repliedTo = self.client.get_tweet(repliedTo, tweet_fields = ['referenced_tweets'], user_fields = ['name', 'username'], expansions = ['author_id'])
             thread.append(repliedTo.data['text'])
+            intro = f"Generated summary; Credits: @{(repliedTo.includes['users'][0].username)}" if intro == '' else intro
             repliedTo = repliedTo.data['referenced_tweets'][-1].id if repliedTo.data['referenced_tweets'] != None and repliedTo.data['referenced_tweets'][-1].type == 'replied_to' else None    
         
         thread = '\n'.join(thread[::-1])
 
-        return thread
+        return intro, thread
 
     def on_tweet(self, tweet):
-        print('Fetching thread')
-        thread = self._get_thread(tweet)
-        summary = generate.generate_summary(thread)
-        self.client.create_tweet(text=summary, in_reply_to_tweet_id=tweet.id)
+        if 'summarize' in tweet.data['text'].split(' '):
+            print('Fetching thread')
+            intro, thread = self._get_thread(tweet)
+            print(intro)
+            summary = generate.generate_summary_t5(thread)
+            toTweet = intro + '\n' + summary
+
+            if len(toTweet) <= 280:
+                self.api.update_status(status=toTweet,in_reply_to_status_id=tweet.id, auto_populate_reply_metadata = True)
+            else:
+                generate.write_to_image(summary=summary)
+                self.api.update_status_with_media(status=intro,in_reply_to_status_id=tweet.id, filename='assets/summary_image.jpg', auto_populate_reply_metadata = True)
+
         
         time.sleep(0.2)
         pass
