@@ -9,7 +9,7 @@ def generate_summary_t5(sample_text) -> str:
     model = TFT5ForConditionalGeneration.from_pretrained("t5-small")
 
     inputs = tokenizer("summarize: " + sample_text, return_tensors="tf", truncation = True).input_ids  # Batch size 1
-    outputs = model.generate(inputs, min_length = min(50, len(sample_text)/16))
+    outputs = model.generate(inputs, min_length = min(50, len(sample_text)//16), max_length = 500)
     
     summary_text = tokenizer.decode(outputs[0], skip_special_tokens = True)
     return summary_text
