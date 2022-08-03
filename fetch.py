@@ -11,7 +11,7 @@ except Exception as e:
 
 
 load_dotenv()
-BEARER_TOKEN = os.environ.get('BEARER')
+BEARER_TOKEN = rf"{os.environ.get('BEARER')}"
 
 class Stream(tweepy.StreamingClient):
 
@@ -71,5 +71,5 @@ class Stream(tweepy.StreamingClient):
 
 
 stream = Stream(bearer_token=BEARER_TOKEN, wait_on_rate_limit=True)
-stream.add_rules(tweepy.StreamRule(['@Arcane45882959 is:reply']))
+stream.add_rules(tweepy.StreamRule(['@TheTLDRBot is:reply']))
 stream.filter(tweet_fields = ['conversation_id', 'referenced_tweets'])
