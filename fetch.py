@@ -5,13 +5,14 @@ try:
     from dotenv import load_dotenv
     import os
     import time
+    import twarc
     import generate
 except Exception as e:
     print('Import error', e)
 
 
 load_dotenv()
-BEARER_TOKEN = rf"{os.environ.get('BEARER')}"
+BEARER_TOKEN = os.environ.get('BEARER')
 
 class Stream(tweepy.StreamingClient):
 
@@ -36,6 +37,9 @@ class Stream(tweepy.StreamingClient):
 
     def on_connect(self):
         print('Stream started')
+    
+    def on_errors(self, errors):
+        print(errors)
     
     def _get_thread(self, tweet) -> str:
         repliedTo = tweet.data['referenced_tweets'][0]['id']
@@ -65,11 +69,12 @@ class Stream(tweepy.StreamingClient):
                 generate.write_to_image(summary=summary)
                 self.api.update_status_with_media(status=intro,in_reply_to_status_id=tweet.id, filename='assets/summary_image.jpg', auto_populate_reply_metadata = True)
 
-        
         time.sleep(0.2)
         pass
 
 
 stream = Stream(bearer_token=BEARER_TOKEN, wait_on_rate_limit=True)
-stream.add_rules(tweepy.StreamRule(['@TheTLDRBot is:reply']))
+#stream.delete_rules(ids = [1555947097433600000])
+#stream.add_rules(tweepy.StreamRule(['@TheTLDRBot is:reply']))
+print(stream.get_rules())
 stream.filter(tweet_fields = ['conversation_id', 'referenced_tweets'])
