@@ -3,4 +3,4 @@ twarc==2.11.1
 transformers
 Pillow
 sentencepiece
-python-dotenve
+python-dotenv
