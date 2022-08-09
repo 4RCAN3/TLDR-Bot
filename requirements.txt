@@ -1,6 +1,7 @@
+tensorflow
+sentencepiece
 tweepy==4.10.0
 twarc==2.11.1
 transformers
 Pillow
-sentencepiece
 python-dotenv
