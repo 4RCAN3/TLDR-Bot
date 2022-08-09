@@ -2,7 +2,6 @@
 
 try:
     import tweepy
-    from dotenv import load_dotenv
     import os
     import time
     import twarc
@@ -11,7 +10,6 @@ except Exception as e:
     print('Import error', e)
 
 
-load_dotenv()
 BEARER_TOKEN = os.environ.get('BEARER')
 
 class Stream(tweepy.StreamingClient):
