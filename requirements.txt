@@ -1,4 +1,4 @@
-tensorflow
+tensorflow-cpu
 sentencepiece
 tweepy==4.10.0
 twarc==2.11.1
