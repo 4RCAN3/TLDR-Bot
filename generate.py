@@ -25,5 +25,3 @@ def write_to_image(summary):
     im.text(xy=(img.size[0]/2, img.size[1] / 2), text=text, font=font, fill='#ffffff', anchor='mm')
 
     img.save("assets/summary_image.jpg")
-
-write_to_image("helo")
