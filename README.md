@@ -1,6 +1,6 @@
 <h1 align="center">It's Over 280</h1>
 <p align="center"><i>A bot made for the Chirp Developer Challenge</i></p>
-<p align="center"><i>A TL;DR Bot made using the BERT model for summarization of threads into a concise tweet</i></p><br>
+<p align="center"><i>A TL;DR Bot made using the T5 model for summarization of threads into a concise tweet</i></p><br>
 
 - Bot: [It's Over 280!](https://twitter.com/TheTLDRBot/)
 - Submission category: Content Discovery
